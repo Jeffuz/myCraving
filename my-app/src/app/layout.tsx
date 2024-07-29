@@ -7,7 +7,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "myCraving",
-  description: "A pantry management app to track and update your ingredients, featuring data analytics and AI-driven recipe generation.",
+  description:
+    "A pantry management app to track and update your ingredients, featuring data analytics and AI-driven recipe generation.",
 };
 
 export default function RootLayout({
@@ -17,8 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Navbar/>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
