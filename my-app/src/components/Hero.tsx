@@ -4,28 +4,19 @@ import { alpha } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import Link from "next/link";
 
 export default function Hero() {
   return (
-    <Box
-      id="hero"
-      sx={() => ({
-        width: "100%",
-        backgroundImage: "linear-gradient(180deg, #CEE5FD, #FFF)",
-        backgroundSize: "100% 20%",
-        backgroundRepeat: "no-repeat",
-      })}
-    >
+    <Box id="hero">
       <Container
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          pt: { xs: 14, sm: 20 },
           pb: { xs: 8, sm: 12 },
         }}
       >
@@ -35,12 +26,12 @@ export default function Hero() {
             sx={{
               display: "flex",
               flexDirection: { xs: "column", md: "row" },
-              alignSelf: "center",
+              alignSelf: "left",
               textAlign: "center",
               fontSize: "clamp(3.5rem, 10vw, 4rem)",
             }}
           >
-            Our latest&nbsp;
+            Save your&nbsp;
             <Typography
               component="span"
               variant="h1"
@@ -49,52 +40,40 @@ export default function Hero() {
                 color: "#5074E7",
               }}
             >
-              products
+              ingredients
             </Typography>
           </Typography>
           <Typography
-            textAlign="center"
+            textAlign="left"
             color="text.secondary"
-            sx={{ alignSelf: "center", width: { sm: "100%", md: "80%" } }}
+            sx={{ alignSelf: "left", width: { sm: "100%", md: "80%" } }}
           >
-            Explore our cutting-edge dashboard, delivering high-quality
-            solutions tailored to your needs. Elevate your experience with
-            top-tier features and services.
+            Explore our pantry management app to track and update your
+            ingredients, featuring data analytics and AI-driven recipe
+            generation.
           </Typography>
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            alignSelf="center"
+            alignSelf="left"
             spacing={1}
             useFlexGap
             sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
           >
-            <TextField
-              id="outlined-basic"
-              hiddenLabel
-              size="small"
-              variant="outlined"
-              aria-label="Enter your email address"
-              placeholder="Your email address"
-              inputProps={{
-                autoComplete: "off",
-                "aria-label": "Enter your email address",
-              }}
-            />
-            <Button variant="contained" color="primary">
-              Start now
-            </Button>
-          </Stack>
-          <Typography
-            variant="caption"
-            textAlign="center"
-            sx={{ opacity: 0.8 }}
-          >
-            By clicking &quot;Start now&quot; you agree to our&nbsp;
-            <Link href="#" color="primary">
-              Terms & Conditions
+            <Link href="/pantry" passHref>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "#5074E7",
+                  "&:hover": {
+                    backgroundColor: "rgba(64, 99, 201, 0.9)",
+                  },
+                  textDecoration: "none",
+                }}
+              >
+                Start now
+              </Button>
             </Link>
-            .
-          </Typography>
+          </Stack>
         </Stack>
       </Container>
     </Box>

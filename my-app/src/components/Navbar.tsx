@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
@@ -10,17 +11,12 @@ import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
-
-const logoStyle = {
-  width: "140px",
-  height: "auto",
-  cursor: "pointer",
-};
+import Link from "next/link";
 
 function Navbar() {
   const [open, setOpen] = React.useState(false);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
+  const toggleDrawer = (newOpen:any) => () => {
     setOpen(newOpen);
   };
 
@@ -57,35 +53,13 @@ function Navbar() {
             >
               <img
                 src="./myCraving.png"
-                style={logoStyle}
                 alt="logo of myCraving"
+                width="200px"
+                height="auto"
+                cursor="pointer"
               />
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <MenuItem sx={{ py: "6px", px: "12px" }}>
-                  <Typography variant="body2" color="text.primary">
-                    Features
-                  </Typography>
-                </MenuItem>
-                <MenuItem sx={{ py: "6px", px: "12px" }}>
-                  <Typography variant="body2" color="text.primary">
-                    Testimonials
-                  </Typography>
-                </MenuItem>
-                <MenuItem sx={{ py: "6px", px: "12px" }}>
-                  <Typography variant="body2" color="text.primary">
-                    Highlights
-                  </Typography>
-                </MenuItem>
-                <MenuItem sx={{ py: "6px", px: "12px" }}>
-                  <Typography variant="body2" color="text.primary">
-                    Pricing
-                  </Typography>
-                </MenuItem>
-                <MenuItem sx={{ py: "6px", px: "12px" }}>
-                  <Typography variant="body2" color="text.primary">
-                    FAQ
-                  </Typography>
-                </MenuItem>
+                {/* Your menu items can go here */}
               </Box>
             </Box>
             <Box
@@ -95,32 +69,38 @@ function Navbar() {
                 alignItems: "center",
               }}
             >
-              <Button
-                color="primary"
-                variant="text"
-                size="small"
-                component="a"
-                target="_blank"
-                sx={{ borderRadius: "20px", color: "#5074E7" }}
-              >
-                Sign in
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                component="a"
-                target="_blank"
-                sx={{
-                  borderRadius: "20px",
-                  backgroundColor: "#5074E7",
-                  "&:hover": {
-                    backgroundColor: "rgba(64, 99, 201, 0.9)",
-                  },
-                }}
-              >
-                Sign up
-              </Button>
+              {/* Use passHref when using non anchor */}
+              <Link href="/signin" passHref>
+                <Button
+                  color="primary"
+                  variant="text"
+                  size="small"
+                  sx={{
+                    borderRadius: "20px",
+                    color: "#5074E7",
+                    textDecoration: "none",
+                  }}
+                >
+                  Sign in
+                </Button>
+              </Link>
+              <Link href="/signup" passHref>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    borderRadius: "20px",
+                    backgroundColor: "#5074E7",
+                    "&:hover": {
+                      backgroundColor: "rgba(64, 99, 201, 0.9)",
+                    },
+                    textDecoration: "none",
+                  }}
+                >
+                  Sign up
+                </Button>
+              </Link>
             </Box>
 
             {/* Mobile View Resposiveness */}
@@ -151,44 +131,46 @@ function Navbar() {
                       flexGrow: 1,
                     }}
                   ></Box>
-                  <MenuItem>Features</MenuItem>
+                  {/* <MenuItem>Features</MenuItem>
                   <MenuItem>Testimonials</MenuItem>
                   <MenuItem>Highlights</MenuItem>
                   <MenuItem>Pricing</MenuItem>
-                  <MenuItem>FAQ</MenuItem>
-                  <Divider />
+                  <MenuItem>FAQ</MenuItem> */}
+                  {/* <Divider /> */}
                   <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      component="a"
-                      target="_blank"
-                      sx={{
-                        borderRadius: "20px",
-                        backgroundColor: "#5074E7",
-                        "&:hover": {
-                          backgroundColor: "rgba(64, 99, 201, 0.9)",
-                        },
-                        width: "100%",
-                      }}
-                    >
-                      Sign up
-                    </Button>
+                    <Link href="/signup" passHref>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        sx={{
+                          borderRadius: "20px",
+                          backgroundColor: "#5074E7",
+                          "&:hover": {
+                            backgroundColor: "rgba(64, 99, 201, 0.9)",
+                          },
+                          width: "100%",
+                          textDecoration: "none",
+                        }}
+                      >
+                        Sign up
+                      </Button>
+                    </Link>
                   </MenuItem>
                   <MenuItem>
-                    <Button
-                      color="primary"
-                      variant="outlined"
-                      component="a"
-                      target="_blank"
-                      sx={{
-                        width: "100%",
-                        borderRadius: "20px",
-                        color: "#5074E7",
-                      }}
-                    >
-                      Sign in
-                    </Button>
+                    <Link href="/signin" passHref>
+                      <Button
+                        color="primary"
+                        variant="outlined"
+                        sx={{
+                          width: "100%",
+                          borderRadius: "20px",
+                          color: "#5074E7",
+                          textDecoration: "none",
+                        }}
+                      >
+                        Sign in
+                      </Button>
+                    </Link>
                   </MenuItem>
                 </Box>
               </Drawer>
