@@ -16,7 +16,7 @@ const isLoggedIn = false;
 function Navbar() {
   const [open, setOpen] = React.useState(false);
 
-  const toggleDrawer = (newOpen) => () => {
+  const toggleDrawer = (newOpen:any) => () => {
     setOpen(newOpen);
   };
 
@@ -51,13 +51,28 @@ function Navbar() {
                 px: 0,
               }}
             >
-              <img
-                src="./myCraving.png"
-                alt="logo of myCraving"
-                width="200px"
-                height="auto"
-                cursor="pointer"
-              />
+              <Link href="/" passHref>
+                <Button
+                  sx={{
+                    textDecoration: "none",
+                    backgroundColor: "transparent",
+                    "&:hover": {
+                      backgroundColor: "transparent",
+                    },
+                    "&:focus": {
+                      backgroundColor: "transparent",
+                    },
+                  }}
+                >
+                  <img
+                    src="./myCraving.png"
+                    alt="logo of myCraving"
+                    width="200px"
+                    height="auto"
+                    cursor="pointer"
+                  />
+                </Button>
+              </Link>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 {/* Your menu items can go here */}
               </Box>
