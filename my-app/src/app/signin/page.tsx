@@ -11,6 +11,8 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
+import { Divider } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
 
 export default function SignInSide() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -69,20 +71,44 @@ export default function SignInSide() {
               />
             </Button>
           </Link>
+          {/* Description */}
           <Typography
             component="h1"
-            variant="h5"
+            variant="h4"
             sx={{
               marginTop: 3,
+              fontWeight: "bold",
             }}
           >
             Sign in
           </Typography>
+          <Typography component="h1" variant="h6">
+            with Google or Email and Password.
+          </Typography>
+          {/* Signup via Google */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 2,
+              backgroundColor: "#5074E7",
+              "&:hover": {
+                backgroundColor: "rgba(64, 99, 201, 0.9)",
+              },
+            }}
+          >
+            <GoogleIcon />
+            <Box sx={{ ml: 1 }}>Continue with Google</Box>
+          </Button>
+          <Divider sx={{ width: "100%" }} />
           <Box
             component="form"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
+            width={"100%"}
           >
             <TextField
               margin="normal"
@@ -115,9 +141,13 @@ export default function SignInSide() {
               sx={{
                 mt: 3,
                 mb: 2,
-                backgroundColor: "#5074E7",
+                color: '#5074E7',
+                border: 1.5,
+                backgroundColor: "white",
                 "&:hover": {
-                  backgroundColor: "rgba(64, 99, 201, 0.9)",
+                  color: 'white',
+                  borderColor: "#5074E7",
+                  backgroundColor: "#5074E7",
                 },
               }}
             >

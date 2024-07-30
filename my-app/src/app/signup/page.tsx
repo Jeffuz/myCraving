@@ -9,6 +9,8 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { Divider } from "@mui/material";
+import GoogleIcon from '@mui/icons-material/Google';
 
 export default function SignUpSide() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +35,7 @@ export default function SignUpSide() {
             alignItems: "center",
           }}
         >
+            {/* Company Logo */}
           <Link href="/" passHref>
             <Button
               sx={{
@@ -55,16 +58,44 @@ export default function SignUpSide() {
               />
             </Button>
           </Link>
+          
+          {/* Description */}
           <Typography
             component="h1"
-            variant="h5"
+            variant="h4"
             sx={{
               marginTop: 3,
+              fontWeight: "bold"
             }}
           >
             Sign up
           </Typography>
-          <Box
+          <Typography
+            component="h1"
+            variant="h6"
+          > 
+            with Google or create an account.
+          </Typography>
+          {/* Signup via Google */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 3,
+              mb: 2,
+              backgroundColor: "#5074E7",
+              "&:hover": {
+                backgroundColor: "rgba(64, 99, 201, 0.9)",
+              },
+            }}
+          >
+            <GoogleIcon/> 
+            <Box sx={{ml: 1}}>Continue with Google</Box>
+          </Button>
+          <Divider sx={{width: '100%'}}/>
+          {/* Form for sign up */}
+          <Box  
             component="form"
             noValidate
             onSubmit={handleSubmit}
@@ -121,9 +152,13 @@ export default function SignUpSide() {
               sx={{
                 mt: 3,
                 mb: 2,
-                backgroundColor: "#5074E7",
+                color: '#5074E7',
+                border: 1.5,
+                backgroundColor: "white",
                 "&:hover": {
-                  backgroundColor: "rgba(64, 99, 201, 0.9)",
+                  color: 'white',
+                  borderColor: "#5074E7",
+                  backgroundColor: "#5074E7",
                 },
               }}
             >
