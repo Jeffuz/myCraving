@@ -6,17 +6,17 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 
+const isLoggedIn = false;
+
 function Navbar() {
   const [open, setOpen] = React.useState(false);
 
-  const toggleDrawer = (newOpen:any) => () => {
+  const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
@@ -34,13 +34,13 @@ function Navbar() {
         <Container maxWidth="lg">
           <Toolbar
             variant="regular"
-            sx={() => ({
+            sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               flexShrink: 0,
               maxHeight: 40,
-            })}
+            }}
           >
             <Box
               sx={{
@@ -69,41 +69,62 @@ function Navbar() {
                 alignItems: "center",
               }}
             >
-              {/* Use passHref when using non anchor */}
-              <Link href="/signin" passHref>
+              {!isLoggedIn ? (
+                <>
+                  <Link href="/signin" passHref>
+                    <Button
+                      color="primary"
+                      variant="text"
+                      size="small"
+                      sx={{
+                        borderRadius: "20px",
+                        color: "#5074E7",
+                        textDecoration: "none",
+                        px: 2,
+                        py: 1,
+                        mr: 1,
+                      }}
+                    >
+                      Sign in
+                    </Button>
+                  </Link>
+                  <Link href="/signup" passHref>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      sx={{
+                        borderRadius: "20px",
+                        backgroundColor: "#5074E7",
+                        "&:hover": {
+                          backgroundColor: "rgba(64, 99, 201, 0.9)",
+                        },
+                        textDecoration: "none",
+                        px: 2,
+                        py: 1,
+                      }}
+                    >
+                      Sign up
+                    </Button>
+                  </Link>
+                </>
+              ) : (
                 <Button
                   color="primary"
-                  variant="text"
-                  size="small"
                   sx={{
+                    width: "100%",
                     borderRadius: "20px",
                     color: "#5074E7",
                     textDecoration: "none",
+                    px: 2,
                   }}
                 >
-                  Sign in
+                  Sign Out
                 </Button>
-              </Link>
-              <Link href="/signup" passHref>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="small"
-                  sx={{
-                    borderRadius: "20px",
-                    backgroundColor: "#5074E7",
-                    "&:hover": {
-                      backgroundColor: "rgba(64, 99, 201, 0.9)",
-                    },
-                    textDecoration: "none",
-                  }}
-                >
-                  Sign up
-                </Button>
-              </Link>
+              )}
             </Box>
 
-            {/* Mobile View Resposiveness */}
+            {/* Mobile View Responsiveness */}
             <Box sx={{ display: { sm: "", md: "none" } }}>
               <Button
                 variant="text"
@@ -131,33 +152,46 @@ function Navbar() {
                       flexGrow: 1,
                     }}
                   ></Box>
-                  {/* <MenuItem>Features</MenuItem>
-                  <MenuItem>Testimonials</MenuItem>
-                  <MenuItem>Highlights</MenuItem>
-                  <MenuItem>Pricing</MenuItem>
-                  <MenuItem>FAQ</MenuItem> */}
-                  {/* <Divider /> */}
-                  <MenuItem>
-                    <Link href="/signup" passHref>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        sx={{
-                          borderRadius: "20px",
-                          backgroundColor: "#5074E7",
-                          "&:hover": {
-                            backgroundColor: "rgba(64, 99, 201, 0.9)",
-                          },
-                          width: "100%",
-                          textDecoration: "none",
-                        }}
-                      >
-                        Sign up
-                      </Button>
-                    </Link>
-                  </MenuItem>
-                  <MenuItem>
-                    <Link href="/signin" passHref>
+                  {!isLoggedIn ? (
+                    <>
+                      <MenuItem>
+                        <Link href="/signup" passHref>
+                          <Button
+                            color="primary"
+                            variant="contained"
+                            sx={{
+                              borderRadius: "20px",
+                              backgroundColor: "#5074E7",
+                              "&:hover": {
+                                backgroundColor: "rgba(64, 99, 201, 0.9)",
+                              },
+                              width: "100%",
+                              textDecoration: "none",
+                            }}
+                          >
+                            Sign up
+                          </Button>
+                        </Link>
+                      </MenuItem>
+                      <MenuItem>
+                        <Link href="/signin" passHref>
+                          <Button
+                            color="primary"
+                            variant="outlined"
+                            sx={{
+                              width: "100%",
+                              borderRadius: "20px",
+                              color: "#5074E7",
+                              textDecoration: "none",
+                            }}
+                          >
+                            Sign in
+                          </Button>
+                        </Link>
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <MenuItem>
                       <Button
                         color="primary"
                         variant="outlined"
@@ -168,10 +202,10 @@ function Navbar() {
                           textDecoration: "none",
                         }}
                       >
-                        Sign in
+                        Sign Out
                       </Button>
-                    </Link>
-                  </MenuItem>
+                    </MenuItem>
+                  )}
                 </Box>
               </Drawer>
             </Box>
