@@ -84,6 +84,7 @@ export default function SignUpSide() {
             sx={{
               mt: 3,
               mb: 2,
+              py: 1,
               backgroundColor: "#5074E7",
               "&:hover": {
                 backgroundColor: "rgba(64, 99, 201, 0.9)",
@@ -152,6 +153,7 @@ export default function SignUpSide() {
               sx={{
                 mt: 3,
                 mb: 2,
+                py: 1,
                 color: '#5074E7',
                 border: 1.5,
                 backgroundColor: "white",

@@ -59,7 +59,7 @@ export default function Hero() {
             useFlexGap
             sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
           >
-            <Link href="/pantry" passHref>
+            <Link href="/dashboard" passHref>
               <Button
                 variant="contained"
                 sx={{
