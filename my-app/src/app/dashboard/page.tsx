@@ -21,14 +21,16 @@ import AutoGraphIcon from "@mui/icons-material/AutoGraph";
 import Pantry from "@/components/Pantry";
 import Recipe from "@/components/Recipe";
 import Analytics from "@/components/Analytics";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer() {
+export default function Dashboard() {
+  const router = useRouter();
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-
-  // Page select from navbar
   const [page, setPage] = useState("Pantry");
 
   const handleDrawerClose = () => {
@@ -46,29 +48,31 @@ export default function ResponsiveDrawer() {
     }
   };
 
-  // Determine Page selected from Navbar
-  const selectPage = (currentPage:string) => {
+  const selectPage = (currentPage: string) => {
     setPage(currentPage);
-    // Close drawer after selecting page
     handleDrawerClose();
   };
 
-  // Signout Button
-  const handleSignOut = () => {
-    // Sign out logic
-    // Jump back to / route (home page)
-  };
+  // If not authenticated, route to signin
+  const { status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.push("/signin");
+    },
+  });
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   const drawer = (
     <div>
-      {/* Navbar */}
       <Toolbar />
       <Divider />
-      {/* Nav pages under navbar */}
       <List>
         {["Pantry", "Recipe", "Analytics"].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton onClick={()=> selectPage(text)}>
+            <ListItemButton onClick={() => selectPage(text)}>
               <ListItemIcon>
                 {index === 0 && <KitchenIcon />}
                 {index === 1 && <RestaurantIcon />}
@@ -80,9 +84,8 @@ export default function ResponsiveDrawer() {
         ))}
       </List>
       <Divider />
-      {/* Logout under navbar */}
       <List>
-        <ListItemButton>
+        <ListItemButton onClick={() => signOut()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>
@@ -102,7 +105,6 @@ export default function ResponsiveDrawer() {
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        {/* Toolbar to display hamburger for responsiveness + Logo*/}
         <Toolbar sx={{ backgroundColor: "#5074E7" }}>
           <IconButton
             color="inherit"
@@ -118,7 +120,6 @@ export default function ResponsiveDrawer() {
             alt="logo of myCravingWhite"
             width="200px"
             height="auto"
-            // cursor="pointer"
           />
         </Toolbar>
       </AppBar>
@@ -167,9 +168,7 @@ export default function ResponsiveDrawer() {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
-        {/* Used as margin to avoid appbar */}
-        <Toolbar/>
-        {/* Conditional run pantry pages*/}
+        <Toolbar />
         {page === "Pantry" && <Pantry />}
         {page === "Recipe" && <Recipe />}
         {page === "Analytics" && <Analytics />}
@@ -177,3 +176,5 @@ export default function ResponsiveDrawer() {
     </Box>
   );
 }
+
+Dashboard.requireAuth = true;

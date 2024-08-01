@@ -1,27 +1,35 @@
 "use client";
 
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+import Link from "next/link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function SignInSide() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const router = useRouter();
+
+  const handleSignIn = async () => {
+    try {
+      await signIn("credentials", {
+        email,
+        password,
+        redirect: true,
+        callbackUrl: "/dashboard",
+      });
+    } catch (error) {
+      console.error("Unexpected error during sign-in:", error);
+    }
   };
 
   return (
@@ -71,7 +79,6 @@ export default function SignInSide() {
               />
             </Button>
           </Link>
-          {/* Description */}
           <Typography
             component="h1"
             variant="h4"
@@ -85,7 +92,6 @@ export default function SignInSide() {
           <Typography component="h1" variant="h6">
             with Google or Email and Password.
           </Typography>
-          {/* Signup via Google */}
           <Button
             type="submit"
             fullWidth
@@ -107,9 +113,9 @@ export default function SignInSide() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
             sx={{ mt: 1 }}
             width={"100%"}
+            onSubmit={(e) => e.preventDefault()}
           >
             <TextField
               margin="normal"
@@ -120,6 +126,7 @@ export default function SignInSide() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -130,28 +137,26 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{
                 mt: 3,
                 mb: 2,
                 py: 1,
-                color: '#5074E7',
+                color: "#5074E7",
                 border: 1.5,
                 backgroundColor: "white",
                 "&:hover": {
-                  color: 'white',
+                  color: "white",
                   borderColor: "#5074E7",
                   backgroundColor: "#5074E7",
                 },
               }}
+              disabled={!email || !password}
+              onClick={handleSignIn}
             >
               Sign In
             </Button>
