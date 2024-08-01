@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import "./globals.css";
 import SessionProvider from "./SessionProvider";
 
@@ -9,7 +10,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider><Loading/></SessionProvider>
       </body>
     </html>
   );

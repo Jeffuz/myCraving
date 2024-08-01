@@ -23,6 +23,7 @@ import Recipe from "@/components/Recipe";
 import Analytics from "@/components/Analytics";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const drawerWidth = 240;
 
@@ -62,7 +63,7 @@ export default function Dashboard() {
   });
 
   if (status === "loading") {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   const drawer = (

@@ -12,13 +12,12 @@ import Typography from "@mui/material/Typography";
 import { Divider } from "@mui/material";
 import GoogleIcon from "@mui/icons-material/Google";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function SignInSide() {
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
-  const router = useRouter();
 
+  // Redirect to dashboard if signin valid
   const handleSignIn = async () => {
     try {
       await signIn("credentials", {
@@ -117,6 +116,7 @@ export default function SignInSide() {
             width={"100%"}
             onSubmit={(e) => e.preventDefault()}
           >
+            {/* Email Field */}
             <TextField
               margin="normal"
               required
@@ -128,6 +128,8 @@ export default function SignInSide() {
               autoFocus
               onChange={(e) => setEmail(e.target.value)}
             />
+
+            {/* Password Field */}
             <TextField
               margin="normal"
               required
