@@ -12,6 +12,11 @@ import {
   TextField,
   Fade,
   Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -46,6 +51,7 @@ const PantryCards = () => {
   const [quantity, setQuantity] = useState("");
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -114,6 +120,7 @@ const PantryCards = () => {
         prevItems.filter((item) => item.id !== selectedItem.id)
       );
       handleClose();
+      setConfirmDelete(false);
     }
   };
 
@@ -128,8 +135,17 @@ const PantryCards = () => {
       <Grid container spacing={2}>
         {items.map((item) => (
           <Grid item xs={12} sm={6} key={item.id}>
-            <Card sx={{ mb: 2 }}>
-              <CardContent onClick={() => handleOpen(item)}>
+            <Card
+              sx={{
+                mb: 2,
+                cursor: "pointer",
+                "&:hover": {
+                  boxShadow: 6,
+                },
+              }}
+              onClick={() => handleOpen(item)}
+            >
+              <CardContent>
                 <Typography variant="h6">{item.name}</Typography>
                 <Typography variant="body2">
                   Quantity: {item.quantity}
@@ -140,6 +156,7 @@ const PantryCards = () => {
         ))}
       </Grid>
 
+      {/* Modal after clicking on ingredient */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -299,7 +316,7 @@ const PantryCards = () => {
                         backgroundColor: "darkred",
                       },
                     }}
-                    onClick={handleDelete}
+                    onClick={() => setConfirmDelete(true)}
                     startIcon={<DeleteIcon />}
                   >
                     Delete
@@ -310,6 +327,31 @@ const PantryCards = () => {
           </Box>
         </Fade>
       </Modal>
+
+      {/* Confirmation for deleting item */}
+      <Dialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" fontWeight="bold">
+          {"Confirm Delete"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this item?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(false)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} sx={{ color: "#ff0033" }} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
