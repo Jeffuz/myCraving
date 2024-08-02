@@ -20,12 +20,25 @@ import PantryCards from "./PantryCards";
 
 // unit selection for ingredient
 const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
+// category selection for ingredient
+const categories = [
+  "Meat",
+  "Vegetables",
+  "Dairy",
+  "Grains",
+  "Fruits",
+  "Spices",
+  "Beverages",
+  "Snacks",
+  "Other",
+];
 
 interface PantryItem {
   id: string;
   name: string;
   quantity: string;
   comments: string;
+  category: string;
 }
 
 const Pantry = () => {
@@ -39,6 +52,7 @@ const Pantry = () => {
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
+  const [category, setCategory] = useState("");
   const [items, setItems] = useState<PantryItem[]>([]);
 
   // get current user information
@@ -71,6 +85,7 @@ const Pantry = () => {
           name: itemName,
           quantity: `${quantity} ${unit}`,
           comments: comments,
+          category: category,
           createdAt: new Date(),
         };
         const docRef = await addDoc(
@@ -82,6 +97,7 @@ const Pantry = () => {
         setQuantity("");
         setUnit("");
         setComments("");
+        setCategory("");
         handleClose();
       } catch (error) {
         console.error("Error adding document: ", error);
@@ -256,6 +272,31 @@ const Pantry = () => {
                   ))}
                 </TextField>
               </Box>
+
+              {/* Category selection */}
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                select
+                id="item-category"
+                label="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#5074E7",
+                    },
+                  },
+                }}
+              >
+                {categories.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
 
               {/* Add comments */}
               <TextField

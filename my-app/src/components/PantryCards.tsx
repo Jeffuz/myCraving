@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -22,7 +22,15 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import {
+  collection,
+  query,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { auth, db } from "@/services/firebase";
 import Loading from "./Loading";
 
@@ -31,14 +39,33 @@ interface PantryItem {
   id: string;
   name: string;
   quantity: string;
-  comments: string;
   unit: string;
+  comments: string;
+  category: string;
 }
 
 // Units for amount selection
 const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
+const categories = [
+  "Meat",
+  "Vegetables",
+  "Dairy",
+  "Grains",
+  "Fruits",
+  "Spices",
+  "Beverages",
+  "Snacks",
+  "Other",
+];
 
-const PantryCards = ({ items, setItems }: any) => {
+const PantryCards = ({
+  items,
+  setItems,
+}: {
+  items: PantryItem[];
+  setItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
+}) => {
+  const [user] = useAuthState(auth);
   const [selectedItem, setSelectedItem] = useState<PantryItem | null>(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -46,14 +73,34 @@ const PantryCards = ({ items, setItems }: any) => {
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
+  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const fetchItems = async () => {
+        const q = query(collection(db, "pantry", user.uid, "items"));
+        const querySnapshot = await getDocs(q);
+        const itemsList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as PantryItem[];
+        setItems(itemsList);
+        setLoading(false);
+      };
+
+      fetchItems();
+    }
+  }, [user, setItems]);
 
   // Set states for item when selecting an ingredient + Modal
   const handleOpen = (item: PantryItem) => {
     setSelectedItem(item);
     setItemName(item.name);
-    setQuantity(item.quantity.split(' ')[0]); // Extract quantity
-    setUnit(item.quantity.split(' ')[1]); // Extract unit
+    setQuantity(item.quantity.split(" ")[0]); // Extract quantity
+    setUnit(item.quantity.split(" ")[1]); // Extract unit
+    setCategory(item.category);
     setComments(item.comments);
     setOpen(true);
   };
@@ -68,20 +115,22 @@ const PantryCards = ({ items, setItems }: any) => {
   // Edit items
   const handleEdit = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", auth.currentUser!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
       await updateDoc(itemRef, {
         name: itemName,
         quantity: `${quantity} ${unit}`, // Save quantity with unit
         comments: comments,
+        category: category,
       });
-      setItems((prevItems:any) =>
-        prevItems.map((item:any) =>
+      setItems((prevItems) =>
+        prevItems.map((item) =>
           item.id === selectedItem.id
             ? {
                 ...item,
                 name: itemName,
                 quantity: `${quantity} ${unit}`,
                 comments: comments,
+                category: category,
               }
             : item
         )
@@ -93,18 +142,18 @@ const PantryCards = ({ items, setItems }: any) => {
   // Delete Item
   const handleDelete = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", auth.currentUser!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
       await deleteDoc(itemRef);
-      setItems((prevItems:any) =>
-        prevItems.filter((item:any) => item.id !== selectedItem.id)
+      setItems((prevItems) =>
+        prevItems.filter((item) => item.id !== selectedItem.id)
       );
       handleClose();
       setConfirmDelete(false);
     }
   };
 
-  // Load until all items are fetched
-  if (!items.length) {
+  // Loading until ingredients are fetched from db
+  if (loading) {
     return <Loading />;
   }
 
@@ -112,7 +161,7 @@ const PantryCards = ({ items, setItems }: any) => {
     <Box>
       {/* Display ingredients as cards in grid format */}
       <Grid container spacing={2}>
-        {items.map((item:any) => (
+        {items.map((item) => (
           <Grid item xs={12} sm={6} key={item.id}>
             <Card
               sx={{
@@ -128,6 +177,9 @@ const PantryCards = ({ items, setItems }: any) => {
                 <Typography variant="h6">{item.name}</Typography>
                 <Typography variant="body2">
                   Quantity: {item.quantity}
+                </Typography>
+                <Typography variant="body2">
+                  Category: {item.category}
                 </Typography>
               </CardContent>
             </Card>
@@ -250,6 +302,31 @@ const PantryCards = ({ items, setItems }: any) => {
                   ))}
                 </TextField>
               </Box>
+              {/* Category selection */}
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                select
+                id="item-category"
+                label="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                disabled={!isEditing}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#5074E7",
+                    },
+                  },
+                }}
+              >
+                {categories.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
               {/* Textfield for comments */}
               <TextField
                 margin="normal"
