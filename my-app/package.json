@@ -13,10 +13,12 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
+    "chart.js": "^4.4.3",
     "firebase": "^10.12.5",
     "next": "14.2.5",
     "next-auth": "^4.24.7",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-firebase-hooks": "^5.1.1"
   },
