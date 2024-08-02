@@ -7,9 +7,8 @@ const Loading = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        mt: 5,
         flexDirection: "column",
       }}
     >

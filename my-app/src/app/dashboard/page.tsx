@@ -97,7 +97,7 @@ export default function Dashboard() {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", height: "100vh", backgroundColor: "#F0F0F0" }}>
       <CssBaseline />
       <AppBar
         position="fixed"

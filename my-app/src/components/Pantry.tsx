@@ -15,6 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/services/firebase";
 import { collection, addDoc } from "firebase/firestore";
+import PantryCards from "./PantryCards";
 
 const Pantry = () => {
   // handle states for opening/closing modal
@@ -73,6 +74,9 @@ const Pantry = () => {
                 borderColor: "#5074E7",
               },
             },
+            backgroundColor: "white",
+            boxShadow: 0.5,
+            borderRadius: 1,
           }}
         />
         {/* Add item button */}
@@ -218,6 +222,10 @@ const Pantry = () => {
           </Box>
         </Fade>
       </Modal>
+      {/* Ingredient List */}
+      <Box sx={{mt: 3}}>
+        <PantryCards />
+      </Box>
     </Box>
   );
 };
