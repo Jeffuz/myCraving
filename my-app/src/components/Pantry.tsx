@@ -12,12 +12,45 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth, db } from "@/services/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const Pantry = () => {
   // handle states for opening/closing modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // states for item description
+  const [itemName, setItemName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [comments, setComments] = useState("");
+
+  // get current user information
+  const [user] = useAuthState(auth);
+
+  // Add item to database
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // check if valid user and add item using their id to db
+    if (user) {
+      try {
+        await addDoc(collection(db, "pantry", user.uid, "items"), {
+          name: itemName,
+          quantity: quantity,
+          comments: comments,
+          createdAt: new Date(),
+        });
+        setItemName("");
+        setQuantity("");
+        setComments("");
+        handleClose();
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
+    }
+  };
 
   return (
     <Box>
@@ -105,7 +138,13 @@ const Pantry = () => {
               </IconButton>
             </Box>
             {/* Modal form for adding item information */}
-            <Box component="form" sx={{ mt: 2 }} noValidate autoComplete="off">
+            <Box
+              component="form"
+              sx={{ mt: 2 }}
+              noValidate
+              autoComplete="off"
+              onSubmit={handleSubmit}
+            >
               <TextField
                 margin="normal"
                 required
@@ -113,7 +152,16 @@ const Pantry = () => {
                 id="item-name"
                 label="Item Name"
                 name="name"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
                 autoFocus
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#5074E7",
+                    },
+                  },
+                }}
               />
               <TextField
                 margin="normal"
@@ -122,6 +170,15 @@ const Pantry = () => {
                 id="item-quantity"
                 label="Quantity"
                 name="quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#5074E7",
+                    },
+                  },
+                }}
               />
               <TextField
                 margin="normal"
@@ -131,6 +188,15 @@ const Pantry = () => {
                 name="comments"
                 multiline
                 rows={4}
+                value={comments}
+                onChange={(e) => setComments(e.target.value)}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#5074E7",
+                    },
+                  },
+                }}
               />
               {/* Add item modal confirmation */}
               <Button
