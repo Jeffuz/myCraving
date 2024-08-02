@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -15,11 +15,18 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/services/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, query, getDocs } from "firebase/firestore";
 import PantryCards from "./PantryCards";
 
 // unit selection for ingredient
 const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
+
+interface PantryItem {
+  id: string;
+  name: string;
+  quantity: string;
+  comments: string;
+}
 
 const Pantry = () => {
   // handle states for opening/closing modal
@@ -32,9 +39,27 @@ const Pantry = () => {
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
+  const [items, setItems] = useState<PantryItem[]>([]);
 
   // get current user information
   const [user] = useAuthState(auth);
+
+  // Load items
+  useEffect(() => {
+    if (user) {
+      const fetchItems = async () => {
+        const q = query(collection(db, "pantry", user.uid, "items"));
+        const querySnapshot = await getDocs(q);
+        const itemsList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as PantryItem[];
+        setItems(itemsList);
+      };
+
+      fetchItems();
+    }
+  }, [user]);
 
   // Add item to database
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,12 +67,17 @@ const Pantry = () => {
     // check if valid user and add item using their id to db
     if (user) {
       try {
-        await addDoc(collection(db, "pantry", user.uid, "items"), {
+        const newItem = {
           name: itemName,
           quantity: `${quantity} ${unit}`,
           comments: comments,
           createdAt: new Date(),
-        });
+        };
+        const docRef = await addDoc(
+          collection(db, "pantry", user.uid, "items"),
+          newItem
+        );
+        setItems((prevItems) => [...prevItems, { id: docRef.id, ...newItem }]);
         setItemName("");
         setQuantity("");
         setUnit("");
@@ -183,6 +213,7 @@ const Pantry = () => {
                   label="Quantity"
                   name="quantity"
                   value={quantity}
+                  type="number"
                   onChange={(e) => setQuantity(e.target.value)}
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -267,7 +298,7 @@ const Pantry = () => {
       </Modal>
       {/* Ingredient List */}
       <Box sx={{ mt: 3 }}>
-        <PantryCards />
+        <PantryCards items={items} setItems={setItems} />
       </Box>
     </Box>
   );

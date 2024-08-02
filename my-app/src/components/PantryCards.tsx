@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -17,20 +17,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  MenuItem,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import MenuItem from "@mui/material/MenuItem";
-import { useAuthState } from "react-firebase-hooks/auth";
-import {
-  collection,
-  query,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from "@/services/firebase";
 import Loading from "./Loading";
 
@@ -39,16 +31,14 @@ interface PantryItem {
   id: string;
   name: string;
   quantity: string;
-  unit: string;
   comments: string;
+  unit: string;
 }
 
 // Units for amount selection
 const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
 
-const PantryCards = () => {
-  const [user] = useAuthState(auth);
-  const [items, setItems] = useState<PantryItem[]>([]);
+const PantryCards = ({ items, setItems }: any) => {
   const [selectedItem, setSelectedItem] = useState<PantryItem | null>(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -56,25 +46,7 @@ const PantryCards = () => {
   const [quantity, setQuantity] = useState("");
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
-  const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      const fetchItems = async () => {
-        const q = query(collection(db, "pantry", user.uid, "items"));
-        const querySnapshot = await getDocs(q);
-        const itemsList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as PantryItem[];
-        setItems(itemsList);
-        setLoading(false);
-      };
-
-      fetchItems();
-    }
-  }, [user]);
 
   // Set states for item when selecting an ingredient + Modal
   const handleOpen = (item: PantryItem) => {
@@ -96,14 +68,14 @@ const PantryCards = () => {
   // Edit items
   const handleEdit = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", auth.currentUser!.uid, "items", selectedItem.id);
       await updateDoc(itemRef, {
         name: itemName,
         quantity: `${quantity} ${unit}`, // Save quantity with unit
         comments: comments,
       });
-      setItems((prevItems) =>
-        prevItems.map((item) =>
+      setItems((prevItems:any) =>
+        prevItems.map((item:any) =>
           item.id === selectedItem.id
             ? {
                 ...item,
@@ -121,18 +93,18 @@ const PantryCards = () => {
   // Delete Item
   const handleDelete = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", auth.currentUser!.uid, "items", selectedItem.id);
       await deleteDoc(itemRef);
-      setItems((prevItems) =>
-        prevItems.filter((item) => item.id !== selectedItem.id)
+      setItems((prevItems:any) =>
+        prevItems.filter((item:any) => item.id !== selectedItem.id)
       );
       handleClose();
       setConfirmDelete(false);
     }
   };
 
-  // Loading until ingredients are fetched from db
-  if (loading) {
+  // Load until all items are fetched
+  if (!items.length) {
     return <Loading />;
   }
 
@@ -140,7 +112,7 @@ const PantryCards = () => {
     <Box>
       {/* Display ingredients as cards in grid format */}
       <Grid container spacing={2}>
-        {items.map((item) => (
+        {items.map((item:any) => (
           <Grid item xs={12} sm={6} key={item.id}>
             <Card
               sx={{
@@ -233,6 +205,7 @@ const PantryCards = () => {
                   label="Quantity"
                   name="quantity"
                   value={quantity}
+                  type="number"
                   onChange={(e) => setQuantity(e.target.value)}
                   disabled={!isEditing}
                   sx={{
