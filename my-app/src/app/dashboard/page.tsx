@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -29,7 +29,6 @@ const drawerWidth = 240;
 
 export default function Dashboard() {
   const router = useRouter();
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [page, setPage] = useState("Pantry");
@@ -55,16 +54,22 @@ export default function Dashboard() {
   };
 
   // If not authenticated, route to signin
-  const { status } = useSession({
+  const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       router.push("/signin");
     },
   });
 
+  // Loading status
   if (status === "loading") {
-    return <Loading/>;
+    return <Loading />;
   }
+
+  // Sign out
+  const handleSignOut = async () => {
+    await signOut({ callbackUrl: "/signin" });
+  };
 
   const drawer = (
     <div>
@@ -86,7 +91,7 @@ export default function Dashboard() {
       </List>
       <Divider />
       <List>
-        <ListItemButton onClick={() => signOut()}>
+        <ListItemButton onClick={handleSignOut}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>

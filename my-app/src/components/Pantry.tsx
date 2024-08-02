@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "next-auth/react";
 import { auth, db } from "@/services/firebase";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
 import PantryCards from "./PantryCards";
@@ -56,13 +56,13 @@ const Pantry = () => {
   const [items, setItems] = useState<PantryItem[]>([]);
 
   // get current user information
-  const [user] = useAuthState(auth);
-
+  const { data: session } = useSession();
+  const user = session?.user;
   // Load items
   useEffect(() => {
     if (user) {
       const fetchItems = async () => {
-        const q = query(collection(db, "pantry", user.uid, "items"));
+        const q = query(collection(db, "pantry", user.id, "items"));
         const querySnapshot = await getDocs(q);
         const itemsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -89,7 +89,7 @@ const Pantry = () => {
           createdAt: new Date(),
         };
         const docRef = await addDoc(
-          collection(db, "pantry", user.uid, "items"),
+          collection(db, "pantry", user.id, "items"),
           newItem
         );
         setItems((prevItems) => [...prevItems, { id: docRef.id, ...newItem }]);

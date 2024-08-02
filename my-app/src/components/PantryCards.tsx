@@ -22,7 +22,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "next-auth/react";
 import {
   collection,
   query,
@@ -49,7 +49,6 @@ interface PantryItem {
 }
 
 const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React.Dispatch<React.SetStateAction<PantryItem[]>> }) => {
-  const [user] = useAuthState(auth);
   const [selectedItem, setSelectedItem] = useState<PantryItem | null>(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -60,10 +59,15 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   const [category, setCategory] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  // Session data
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  // fetch items to view ingredients
   useEffect(() => {
     if (user) {
       const fetchItems = async () => {
-        const q = query(collection(db, "pantry", user.uid, "items"));
+        const q = query(collection(db, "pantry", user.id, "items"));
         const querySnapshot = await getDocs(q);
         const itemsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -97,7 +101,7 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   // Edit items
   const handleEdit = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", user!.id, "items", selectedItem.id);
       await updateDoc(itemRef, {
         name: itemName,
         quantity: `${quantity} ${unit}`,
@@ -124,7 +128,7 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   // Delete Item
   const handleDelete = async () => {
     if (selectedItem) {
-      const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
+      const itemRef = doc(db, "pantry", user!.id, "items", selectedItem.id);
       await deleteDoc(itemRef);
       setItems((prevItems) =>
         prevItems.filter((item) => item.id !== selectedItem.id)

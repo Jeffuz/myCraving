@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useSession } from "next-auth/react";
 import { collection, query, getDocs } from "firebase/firestore";
 import { auth, db } from "@/services/firebase";
 import Loading from "./Loading";
@@ -36,18 +36,20 @@ interface PantryItem {
 }
 
 const Analytics = () => {
-  const [user] = useAuthState(auth);
   const [items, setItems] = useState<PantryItem[]>([]);
   const [chartData, setChartData] = useState<any>({});
   const [totalItems, setTotalItems] = useState<number>(0);
   const [mostCommonCategory, setMostCommonCategory] = useState<string>("");
   const [leastCommonCategory, setLeastCommonCategory] = useState<string>("");
 
+  const { data: session } = useSession();
+  const user = session?.user;
+
   useEffect(() => {
     if (user) {
       // Fetch pantry items from Firestore
       const fetchItems = async () => {
-        const q = query(collection(db, "pantry", user.uid, "items"));
+        const q = query(collection(db, "pantry", user.id, "items"));
         const querySnapshot = await getDocs(q);
         const itemsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,

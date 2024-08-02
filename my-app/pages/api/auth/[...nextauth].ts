@@ -12,20 +12,32 @@ export const authOptions = {
       name: "Credentials",
       credentials: {},
       async authorize(credentials): Promise<any> {
-        return await signInWithEmailAndPassword(
+        const userCredential = await signInWithEmailAndPassword(
           auth,
           (credentials as any).email || "",
           (credentials as any).password || ""
-        )
-          .then((userCredential) => {
-            if (userCredential.user) {
-              return userCredential.user;
-            }
-            return null;
-          })
-          .catch((error) => console.log(error));
+        );
+        if (userCredential.user) {
+          return {
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+          };
+        }
+        return null;
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
 };
 export default NextAuth(authOptions);
