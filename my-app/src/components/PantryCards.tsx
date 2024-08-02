@@ -21,6 +21,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
+import MenuItem from "@mui/material/MenuItem";
 import { useAuthState } from "react-firebase-hooks/auth";
 import {
   collection,
@@ -33,13 +34,17 @@ import {
 import { auth, db } from "@/services/firebase";
 import Loading from "./Loading";
 
-// Define PantryItem interface
+// schema
 interface PantryItem {
   id: string;
   name: string;
   quantity: string;
+  unit: string;
   comments: string;
 }
+
+// Units for amount selection
+const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
 
 const PantryCards = () => {
   const [user] = useAuthState(auth);
@@ -49,6 +54,7 @@ const PantryCards = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -70,16 +76,17 @@ const PantryCards = () => {
     }
   }, [user]);
 
-  //   Set states for item when selecting an ingredient + Modal
+  // Set states for item when selecting an ingredient + Modal
   const handleOpen = (item: PantryItem) => {
     setSelectedItem(item);
     setItemName(item.name);
-    setQuantity(item.quantity);
+    setQuantity(item.quantity.split(' ')[0]); // Extract quantity
+    setUnit(item.quantity.split(' ')[1]); // Extract unit
     setComments(item.comments);
     setOpen(true);
   };
 
-  //   Close modal
+  // Close modal
   const handleClose = () => {
     setOpen(false);
     setSelectedItem(null);
@@ -92,7 +99,7 @@ const PantryCards = () => {
       const itemRef = doc(db, "pantry", user!.uid, "items", selectedItem.id);
       await updateDoc(itemRef, {
         name: itemName,
-        quantity: quantity,
+        quantity: `${quantity} ${unit}`, // Save quantity with unit
         comments: comments,
       });
       setItems((prevItems) =>
@@ -101,7 +108,7 @@ const PantryCards = () => {
             ? {
                 ...item,
                 name: itemName,
-                quantity: quantity,
+                quantity: `${quantity} ${unit}`,
                 comments: comments,
               }
             : item
@@ -216,24 +223,60 @@ const PantryCards = () => {
                   },
                 }}
               />
-              {/* Textfield for quantity */}
-              <TextField
-                margin="normal"
-                fullWidth
-                id="item-quantity"
-                label="Quantity"
-                name="quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                disabled={!isEditing}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#5074E7",
+              {/* Amount selection including units */}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {/* Amount */}
+                <TextField
+                  margin="normal"
+                  required
+                  id="item-quantity"
+                  label="Quantity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  disabled={!isEditing}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#5074E7",
+                      },
                     },
-                  },
-                }}
-              />
+                    mr: 2,
+                    flexGrow: 1,
+                    height: "56px",
+                    "& .MuiInputBase-root": {
+                      height: "100%",
+                    },
+                  }}
+                />
+                {/* Units */}
+                <TextField
+                  margin="normal"
+                  select
+                  label="Unit"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  disabled={!isEditing}
+                  sx={{
+                    flexBasis: "30%",
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#5074E7",
+                      },
+                    },
+                    height: "56px",
+                    "& .MuiInputBase-root": {
+                      height: "100%",
+                    },
+                  }}
+                >
+                  {units.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
               {/* Textfield for comments */}
               <TextField
                 margin="normal"

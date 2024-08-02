@@ -9,6 +9,7 @@ import {
   Typography,
   IconButton,
   Fade,
+  MenuItem,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -16,6 +17,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, db } from "@/services/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import PantryCards from "./PantryCards";
+
+// unit selection for ingredient
+const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
 
 const Pantry = () => {
   // handle states for opening/closing modal
@@ -26,6 +30,7 @@ const Pantry = () => {
   // states for item description
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
 
   // get current user information
@@ -39,12 +44,13 @@ const Pantry = () => {
       try {
         await addDoc(collection(db, "pantry", user.uid, "items"), {
           name: itemName,
-          quantity: quantity,
+          quantity: `${quantity} ${unit}`,
           comments: comments,
           createdAt: new Date(),
         });
         setItemName("");
         setQuantity("");
+        setUnit("");
         setComments("");
         handleClose();
       } catch (error) {
@@ -167,23 +173,60 @@ const Pantry = () => {
                   },
                 }}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="item-quantity"
-                label="Quantity"
-                name="quantity"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#5074E7",
+              {/* Amount selection including units */}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {/* Amount */}
+                <TextField
+                  margin="normal"
+                  required
+                  id="item-quantity"
+                  label="Quantity"
+                  name="quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#5074E7",
+                      },
                     },
-                  },
-                }}
-              />
+                    mr: 2,
+                    flexGrow: 1,
+                    height: "56px",
+                    "& .MuiInputBase-root": {
+                      height: "100%",
+                    },
+                  }}
+                />
+                {/* Units */}
+                <TextField
+                  margin="normal"
+                  select
+                  label="Unit"
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  sx={{
+                    flexBasis: "30%",
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#5074E7",
+                      },
+                    },
+                    height: "56px",
+                    "& .MuiInputBase-root": {
+                      height: "100%",
+                    },
+                  }}
+                >
+                  {units.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+
+              {/* Add comments */}
               <TextField
                 margin="normal"
                 fullWidth
@@ -223,7 +266,7 @@ const Pantry = () => {
         </Fade>
       </Modal>
       {/* Ingredient List */}
-      <Box sx={{mt: 3}}>
+      <Box sx={{ mt: 3 }}>
         <PantryCards />
       </Box>
     </Box>
