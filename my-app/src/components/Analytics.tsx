@@ -41,6 +41,7 @@ const Analytics = () => {
   const [totalItems, setTotalItems] = useState<number>(0);
   const [mostCommonCategory, setMostCommonCategory] = useState<string>("");
   const [leastCommonCategory, setLeastCommonCategory] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   const { data: session } = useSession();
   const user = session?.user;
@@ -49,6 +50,7 @@ const Analytics = () => {
     if (user) {
       // Fetch pantry items from Firestore
       const fetchItems = async () => {
+        setLoading(true);
         const q = query(collection(db, "pantry", user.id, "items"));
         const querySnapshot = await getDocs(q);
         const itemsList = querySnapshot.docs.map((doc) => ({
@@ -81,6 +83,9 @@ const Analytics = () => {
           ],
         };
 
+        setLoading(false);
+
+
         // Update chart data
         setChartData(data);
 
@@ -99,6 +104,20 @@ const Analytics = () => {
       fetchItems();
     }
   }, [user]);
+
+  // Loading until ingredients are fetched from db
+  if (loading) {
+    return <Loading />;
+  }
+
+  // Display message if pantry is empty
+  if (items.length === 0) {
+    return (
+      <div>
+        Your pantry is empty. Please add some items to view analytics here.
+      </div>
+    );
+  }
 
   return (
     <Box sx={{ p: 3 }}>
