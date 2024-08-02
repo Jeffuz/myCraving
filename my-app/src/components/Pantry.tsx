@@ -125,11 +125,12 @@ const Pantry = () => {
               />
               <TextField
                 margin="normal"
-                required
                 fullWidth
-                id="item-category"
-                label="Category"
-                name="category"
+                id="item-comments"
+                label="Comments"
+                name="comments"
+                multiline
+                rows={4}
               />
               {/* Add item modal confirmation */}
               <Button
