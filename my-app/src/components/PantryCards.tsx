@@ -31,12 +31,22 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { auth, db } from "@/services/firebase";
+import { db } from "@/services/firebase";
 import Loading from "./Loading";
 
 // Units for amount selection
 const units = ["kg", "g", "lb", "oz", "l", "ml", "cup", "tbsp", "tsp", "piece"];
-const categories = ["Meat", "Vegetables", "Dairy", "Grains", "Fruits", "Beverages", "Snacks", "Condiments", "Others"];
+const categories = [
+  "Meat",
+  "Vegetables",
+  "Dairy",
+  "Grains",
+  "Fruits",
+  "Beverages",
+  "Snacks",
+  "Condiments",
+  "Others",
+];
 
 // schema
 interface PantryItem {
@@ -48,7 +58,13 @@ interface PantryItem {
   category: string;
 }
 
-const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React.Dispatch<React.SetStateAction<PantryItem[]>> }) => {
+const PantryCards = ({
+  items,
+  setItems,
+}: {
+  items: PantryItem[];
+  setItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
+}) => {
   const [selectedItem, setSelectedItem] = useState<PantryItem | null>(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -58,6 +74,7 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   const [comments, setComments] = useState("");
   const [category, setCategory] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Session data
   const { data: session } = useSession();
@@ -67,6 +84,7 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   useEffect(() => {
     if (user) {
       const fetchItems = async () => {
+        setLoading(true);
         const q = query(collection(db, "pantry", user.id, "items"));
         const querySnapshot = await getDocs(q);
         const itemsList = querySnapshot.docs.map((doc) => ({
@@ -74,6 +92,7 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
           ...doc.data(),
         })) as PantryItem[];
         setItems(itemsList);
+        setLoading(false);
       };
 
       fetchItems();
@@ -84,8 +103,8 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   const handleOpen = (item: PantryItem) => {
     setSelectedItem(item);
     setItemName(item.name);
-    setQuantity(item.quantity.split(' ')[0]); // Extract quantity
-    setUnit(item.quantity.split(' ')[1]); // Extract unit
+    setQuantity(item.quantity.split(" ")[0]); // Extract quantity
+    setUnit(item.quantity.split(" ")[1]); // Extract unit
     setComments(item.comments);
     setCategory(item.category);
     setOpen(true);
@@ -139,8 +158,15 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
   };
 
   // Loading until ingredients are fetched from db
-  if (items.length === 0) {
+  if (loading) {
     return <Loading />;
+  }
+
+  // Display message if pantry is empty
+  if (items.length === 0) {
+    return (
+      <div>Your pantry is empty. Please add some items to view them here.</div>
+    );
   }
 
   return (
@@ -164,7 +190,9 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
                 <Typography variant="body2">
                   Quantity: {item.quantity}
                 </Typography>
-                <Typography variant="body2">Category: {item.category}</Typography>
+                <Typography variant="body2">
+                  Category: {item.category}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -318,8 +346,6 @@ const PantryCards = ({ items, setItems }: { items: PantryItem[], setItems: React
                 id="item-comments"
                 label="Comments"
                 name="comments"
-                multiline
-                rows={4}
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
                 disabled={!isEditing}
