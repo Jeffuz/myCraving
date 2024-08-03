@@ -36,7 +36,7 @@ export default function SignUpSide() {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/signin");
     } catch (error) {
-      setError(error.message);
+      setError((error as Error).message);
     }
   };
 
@@ -119,27 +119,6 @@ export default function SignUpSide() {
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
-              {/* <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="First Name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
