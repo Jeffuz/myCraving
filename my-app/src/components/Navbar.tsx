@@ -16,7 +16,7 @@ const isLoggedIn = false;
 function Navbar() {
   const [open, setOpen] = React.useState(false);
 
-  const toggleDrawer = (newOpen:any) => () => {
+  const toggleDrawer = (newOpen: any) => () => {
     setOpen(newOpen);
   };
 
@@ -64,12 +64,13 @@ function Navbar() {
                     },
                   }}
                 >
-                  <img
+                  <Box
+                    component="img"
                     src="./myCraving.png"
                     alt="logo of myCraving"
                     width="200px"
                     height="auto"
-                    cursor="pointer"
+                    sx={{ cursor: "pointer" }}
                   />
                 </Button>
               </Link>

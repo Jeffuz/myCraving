@@ -12,12 +12,13 @@ const Loading = () => {
         flexDirection: "column",
       }}
     >
-      <img
+      <Box
+        component="img"
         src="./myCraving.png"
         alt="logo of myCraving"
         width="300px"
         height="auto"
-        cursor="pointer"
+        sx={{ cursor: "pointer" }}
       />
       <svg
         xmlns="http://www.w3.org/2000/svg"

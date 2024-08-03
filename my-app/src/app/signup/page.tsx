@@ -67,12 +67,13 @@ export default function SignUpSide() {
                 },
               }}
             >
-              <img
+              <Box
+                component="img"
                 src="./myCraving.png"
                 alt="logo of myCraving"
                 width="200px"
                 height="auto"
-                cursor="pointer"
+                sx={{ cursor: "pointer" }}
               />
             </Button>
           </Link>
