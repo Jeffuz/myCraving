@@ -170,8 +170,10 @@ export default function SignInSide() {
                 </Link> */}
               </Grid>
               <Grid item>
-                <Link href="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                <Link href="/signup" passHref>
+                  <Typography variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Typography>
                 </Link>
               </Grid>
             </Grid>
