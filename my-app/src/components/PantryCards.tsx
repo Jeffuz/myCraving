@@ -58,13 +58,7 @@ interface PantryItem {
   category: string;
 }
 
-const PantryCards = ({
-  items,
-  setItems,
-}: {
-  items: PantryItem[];
-  setItems: React.Dispatch<React.SetStateAction<PantryItem[]>>;
-}) => {
+const PantryCards = ({ items, setItems, searchInput }: any) => {
   const [selectedItem, setSelectedItem] = useState<PantryItem | null>(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -98,6 +92,11 @@ const PantryCards = ({
       fetchItems();
     }
   }, [user, setItems]);
+
+  // search items from searchbar
+  const searchedItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchInput.toLowerCase())
+  );
 
   // Set states for item when selecting an ingredient + Modal
   const handleOpen = (item: PantryItem) => {
@@ -173,7 +172,7 @@ const PantryCards = ({
     <Box>
       {/* Display ingredients as cards in grid format */}
       <Grid container spacing={2}>
-        {items.map((item) => (
+        {searchedItems.map((item) => (
           <Grid item xs={12} sm={6} key={item.id}>
             <Card
               sx={{

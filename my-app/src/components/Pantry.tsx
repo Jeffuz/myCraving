@@ -53,7 +53,10 @@ const Pantry = () => {
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
   const [category, setCategory] = useState("");
-  const [items, setItems] = useState<PantryItem[]>([]);
+  const [items, setItems] = useState([]);
+
+  // state for search
+  const [searchInput, setSerachInput] = useState("");
 
   // get current user information
   const { data: session } = useSession();
@@ -118,6 +121,8 @@ const Pantry = () => {
         <TextField
           variant="outlined"
           placeholder="Search..."
+          value={searchInput}
+          onChange={(e)=> setSerachInput(e.target.value)}
           sx={{
             flexGrow: 1,
             mr: 2,
@@ -339,7 +344,7 @@ const Pantry = () => {
       </Modal>
       {/* Ingredient List */}
       <Box sx={{ mt: 3 }}>
-        <PantryCards items={items} setItems={setItems} />
+        <PantryCards items={items} setItems={setItems} searchInput={searchInput}/>
       </Box>
     </Box>
   );
