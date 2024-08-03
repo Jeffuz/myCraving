@@ -53,7 +53,7 @@ const Pantry = () => {
   const [unit, setUnit] = useState("");
   const [comments, setComments] = useState("");
   const [category, setCategory] = useState("");
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<PantryItem[]>([]);
 
   // state for search
   const [searchInput, setSerachInput] = useState("");
