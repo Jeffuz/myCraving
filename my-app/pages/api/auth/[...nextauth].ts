@@ -5,6 +5,19 @@ import { auth } from "@/services/firebase";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
 
+interface CustomUser {
+  id: string;
+  email?: string | null;
+  name?: string | null;
+  image?: string | null;
+}
+
+declare module "next-auth" {
+  interface Session {
+    user: CustomUser;
+  }
+}
+
 export const authOptions = {
   pages: {
     signIn: "/signin",
