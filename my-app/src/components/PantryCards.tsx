@@ -94,7 +94,7 @@ const PantryCards = ({ items, setItems, searchInput }: any) => {
   }, [user, setItems]);
 
   // search items from searchbar
-  const searchedItems = items.filter((item) =>
+  const searchedItems = items.filter((item: PantryItem) =>
     item.name.toLowerCase().includes(searchInput.toLowerCase())
   );
 
@@ -126,8 +126,8 @@ const PantryCards = ({ items, setItems, searchInput }: any) => {
         comments: comments,
         category: category,
       });
-      setItems((prevItems) =>
-        prevItems.map((item) =>
+      setItems((prevItems: PantryItem[]) =>
+        prevItems.map((item: PantryItem) =>
           item.id === selectedItem.id
             ? {
                 ...item,
@@ -148,8 +148,8 @@ const PantryCards = ({ items, setItems, searchInput }: any) => {
     if (selectedItem) {
       const itemRef = doc(db, "pantry", user!.id, "items", selectedItem.id);
       await deleteDoc(itemRef);
-      setItems((prevItems) =>
-        prevItems.filter((item) => item.id !== selectedItem.id)
+      setItems((prevItems: PantryItem[]) =>
+        prevItems.filter((item: PantryItem) => item.id !== selectedItem.id)
       );
       handleClose();
       setConfirmDelete(false);
@@ -172,7 +172,7 @@ const PantryCards = ({ items, setItems, searchInput }: any) => {
     <Box>
       {/* Display ingredients as cards in grid format */}
       <Grid container spacing={2}>
-        {searchedItems.map((item) => (
+        {searchedItems.map((item: PantryItem) => (
           <Grid item xs={12} sm={6} key={item.id}>
             <Card
               sx={{

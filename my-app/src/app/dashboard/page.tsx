@@ -121,11 +121,13 @@ export default function Dashboard() {
           >
             <MenuIcon />
           </IconButton>
-          <img
+          <Box
+            component="img"
             src="./myCravingWhite.png"
-            alt="logo of myCravingWhite"
+            alt="logo of myCraving"
             width="200px"
             height="auto"
+            sx={{ cursor: "pointer" }}
           />
         </Toolbar>
       </AppBar>
