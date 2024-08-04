@@ -5,30 +5,29 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 
 export default function Hero() {
   return (
-    <Box id="hero">
+    <Box id="hero" sx={{ minHeight: "100vh" }}>
       <Container
         sx={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          pb: { xs: 8, sm: 12 },
+          justifyContent: "center",
+          height: "100vh",
+          textAlign: "center",
         }}
       >
-        <Stack spacing={2} useFlexGap sx={{ width: { xs: "100%", sm: "70%" } }}>
+        <Stack spacing={2} sx={{ width: "100%" }}>
           <Typography
             variant="h1"
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignSelf: "left",
-              textAlign: "center",
               fontSize: "clamp(3.5rem, 10vw, 4rem)",
+              fontWeight: "bold",
+              color: "#333",
             }}
           >
             Save your&nbsp;
@@ -38,15 +37,15 @@ export default function Hero() {
               sx={{
                 fontSize: "clamp(3rem, 10vw, 4rem)",
                 color: "#5074E7",
+                fontWeight: "bold",
               }}
             >
               ingredients
             </Typography>
           </Typography>
           <Typography
-            textAlign="left"
             color="text.secondary"
-            sx={{ alignSelf: "left", width: { sm: "100%", md: "80%" } }}
+            sx={{ fontSize: "1.25rem" }}
           >
             Explore our pantry management app to track and update your
             ingredients, featuring data analytics and AI-driven recipe
@@ -54,10 +53,8 @@ export default function Hero() {
           </Typography>
           <Stack
             direction={{ xs: "column", sm: "row" }}
-            alignSelf="left"
-            spacing={1}
-            useFlexGap
-            sx={{ pt: 2, width: { xs: "100%", sm: "auto" } }}
+            spacing={2}
+            sx={{ pt: 4, width: "100%", justifyContent: "center" }}
           >
             <Link href="/dashboard" passHref>
               <Button
@@ -67,7 +64,9 @@ export default function Hero() {
                   "&:hover": {
                     backgroundColor: "rgba(64, 99, 201, 0.9)",
                   },
-                  textDecoration: "none",
+                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  padding: "10px 20px",
                 }}
               >
                 Start now
