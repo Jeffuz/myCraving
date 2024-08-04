@@ -105,6 +105,7 @@ export default function SignInSide() {
                 backgroundColor: "rgba(64, 99, 201, 0.9)",
               },
             }}
+            disabled
           >
             <GoogleIcon />
             <Box sx={{ ml: 1 }}>Continue with Google</Box>
