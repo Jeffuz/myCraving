@@ -14,7 +14,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSession } from "next-auth/react";
-import { auth, db } from "@/services/firebase";
+import { db } from "@/services/firebase";
 import { collection, addDoc, query, getDocs } from "firebase/firestore";
 import PantryCards from "./PantryCards";
 
@@ -122,7 +122,7 @@ const Pantry = () => {
           variant="outlined"
           placeholder="Search..."
           value={searchInput}
-          onChange={(e)=> setSerachInput(e.target.value)}
+          onChange={(e) => setSerachInput(e.target.value)}
           sx={{
             flexGrow: 1,
             mr: 2,
@@ -252,6 +252,7 @@ const Pantry = () => {
                 />
                 {/* Units */}
                 <TextField
+                  required
                   margin="normal"
                   select
                   label="Unit"
@@ -324,6 +325,7 @@ const Pantry = () => {
               />
               {/* Add item modal confirmation */}
               <Button
+                disabled={!itemName || !quantity || !unit || !category}
                 type="submit"
                 fullWidth
                 variant="contained"
@@ -344,7 +346,11 @@ const Pantry = () => {
       </Modal>
       {/* Ingredient List */}
       <Box sx={{ mt: 3 }}>
-        <PantryCards items={items} setItems={setItems} searchInput={searchInput}/>
+        <PantryCards
+          items={items}
+          setItems={setItems}
+          searchInput={searchInput}
+        />
       </Box>
     </Box>
   );
